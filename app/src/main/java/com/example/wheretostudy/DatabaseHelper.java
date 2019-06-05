@@ -2,9 +2,12 @@ package com.example.wheretostudy;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -31,12 +34,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //neuer User wird hinzugefügt
-    public boolean addUser(String user) {
+    public boolean addUser(String user, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL1, user);
-        Log.d(TAG, "addUser: Adding " + user + " to " + TABLE_NAME);
+        contentValues.put(COL2, password);
+        Log.d(TAG, "addUser: Adding " + user + " with password "+ password + " to " + TABLE_NAME);
+        long result = db.insert(TABLE_NAME, null, contentValues);
+
+        if(result == -1)
+            return false;
+        else
+            return true;
     }
+
+    //userdaten abfragen
+     public boolean checkUser(String user, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME;
+        Cursor data = db.rawQuery(query, null);
+        while(data.moveToNext()){
+            //get value from database in column user
+            if(data.getString(1) == user){
+                if(data.getString(2) == password)
+                    return true;
+            }
+        }
+        //wrong data was entered
+        return false;
+     }
 
 
 
