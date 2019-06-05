@@ -73,8 +73,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor data = db.rawQuery(query, null);
         while(data.moveToNext()){
             //get value from database in column user
-            if(data.getString(1) == user){
-                if(data.getString(2) == password)
+            if(data.getString(0) == user){
+                if(data.getString(1) == password)
                     return true;
             }
         }
